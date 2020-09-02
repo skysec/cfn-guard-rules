@@ -1,0 +1,22 @@
+#######################
+# CFN Guard Rule
+# S3 Buckets
+#######################
+
+# No Public Access
+AWS::S3::Bucket PublicAccessBlockConfiguration.BlockPublicAcls == true << S3 Bucket - PublicAccessBlockConfiguration: BlockPublicAcls
+AWS::S3::Bucket PublicAccessBlockConfiguration.BlockPublicPolicy == true << S3 Bucket - PublicAccessBlockConfiguration: BlockPublicPolicy
+AWS::S3::Bucket PublicAccessBlockConfiguration.IgnorePublicAcls == true << S3 Bucket - PublicAccessBlockConfiguration: IgnorePublicAcls
+AWS::S3::Bucket PublicAccessBlockConfiguration.RestrictPublicBuckets == true << S3 Bucket - PublicAccessBlockConfiguration: RestrictPublicBuckets
+
+# Private Buckets Only
+AWS::S3::Bucket AccessControl NOT_IN [PublicRead,PublicReadWrite,AuthenticatedRead,AwsExecRead] << S3 Bucket - Private Bucket Only
+
+# Encryption
+AWS::S3::Bucket BucketEncryption.ServerSideEncryptionConfiguration.0.ServerSideEncryptionByDefault.SSEAlgorithm IN [aws:kms,AES256] << S3 Bucket Must be encrypted
+
+# Bucket Policy
+AWS::S3::BucketPolicy PolicyDocument.Statement.*.Effect == Deny
+AWS::S3::BucketPolicy PolicyDocument.Statement.*.Action == s3:*
+AWS::S3::BucketPolicy PolicyDocument.Statement.*.Condition == {"Bool":{"aws:SecureTransport":false}}
+
