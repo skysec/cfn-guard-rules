@@ -16,7 +16,4 @@ AWS::S3::Bucket AccessControl NOT_IN [PublicRead,PublicReadWrite,AuthenticatedRe
 AWS::S3::Bucket BucketEncryption.ServerSideEncryptionConfiguration.0.ServerSideEncryptionByDefault.SSEAlgorithm IN [aws:kms,AES256] << S3 Bucket Must be encrypted
 
 # Bucket Policy
-AWS::S3::BucketPolicy PolicyDocument.Statement.*.Effect == Deny
-AWS::S3::BucketPolicy PolicyDocument.Statement.*.Action == s3:*
-AWS::S3::BucketPolicy PolicyDocument.Statement.*.Condition == {"Bool":{"aws:SecureTransport":false}}
-
+AWS::S3::BucketPolicy PolicyDocument.Statement.* == {"Action":"s3:*","Condition":{"Bool":{"aws:SecureTransport":false}},"Effect":"Deny","Principal":"*","Resource":"*"} << Bucket Policy must deny non tls access
