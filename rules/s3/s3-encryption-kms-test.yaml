@@ -1,0 +1,62 @@
+---
+- input:
+    Resources: {}
+  expectations:
+    rules:
+      check_s3_encryption: SKIP
+      check_s3_algo: SKIP
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+  expectations:
+    rules:
+      check_s3_encryption: FAIL
+      check_s3_algo: SKIP
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            BucketEncryption:
+              ServerSideEncryptionConfiguration:
+                - ServerSideEncryptionByDefault:
+                    SSEAlgorithm: 'aws:kms'
+                    KMSMasterKeyID: !Ref KMS-KEY-ARN
+  expectations:
+    rules:
+      check_s3_encryption: PASS
+      check_s3_algo: PASS
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            BucketEncryption:
+              ServerSideEncryptionConfiguration:
+                - ServerSideEncryptionByDefault:
+                    SSEAlgorithm: 'AES256'
+  expectations:
+    rules:
+      check_s3_encryption: PASS
+      check_s3_algo: FAIL
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            BucketEncryption:
+              ServerSideEncryptionConfiguration:
+                - BucketKeyEnabled: true
+                  ServerSideEncryptionByDefault:
+                    SSEAlgorithm: 'aws:kms'
+                    KMSMasterKeyID: !Ref KMS-KEY-ARN
+  expectations:
+    rules:
+      check_s3_encryption: PASS
+      check_s3_algo: PASS

@@ -1,0 +1,20 @@
+#
+# Bucket must be encrypting by default using "aws:kms"
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+let sse_algorithm = ['aws:kms']
+
+#
+# Check for s3 encryption
+#
+rule check_s3_encryption when %s3_buckets !empty {
+    %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration exists
+}
+
+#
+# Check for s3 encryption allowed algorithm
+#
+rule check_s3_algo when check_s3_encryption {
+    let encryption = %s3_buckets.Properties.BucketEncryption
+    %encryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in %sse_algorithm
+}
