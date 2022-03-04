@@ -1,0 +1,11 @@
+#
+# Bucket must have Access Log Config
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+#
+# Check for Access Log Configuration 
+#
+rule check_logging_config when %s3_buckets !empty {
+    %s3_buckets.Properties.LoggingConfiguration exists
+}

@@ -1,0 +1,37 @@
+---
+- input:
+    Resources: {}
+  expectations:
+    rules:
+      check_logging_config: SKIP
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+  expectations:
+    rules:
+      check_logging_config: FAIL
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            LoggingConfiguration:
+  expectations:
+    rules:
+      check_logging_config: PASS
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            LoggingConfiguration:
+              DestinationBucketName: !Ref LoggingBucket
+
+  expectations:
+    rules:
+      check_logging_config: PASS
