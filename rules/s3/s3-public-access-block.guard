@@ -1,0 +1,22 @@
+#
+# Bucket must have Public Access Block Enabled
+#  BlockPublicAcls
+#  BlockPublicPolicy
+#  IgnorePublicAcls
+#  RestrictPublicBuckets
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+#
+# Check for Public Access Block Configuration
+#
+rule check_public_access_block_config when %s3_buckets !empty {
+    %s3_buckets.Properties.PublicAccessBlockConfiguration exists
+    let public_access_block_config = %s3_buckets.Properties.PublicAccessBlockConfiguration
+    %public_access_block_config {
+        BlockPublicAcls == true
+        BlockPublicPolicy == true
+        IgnorePublicAcls == true
+        RestrictPublicBuckets == true
+    }
+}

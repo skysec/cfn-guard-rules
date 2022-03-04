@@ -1,0 +1,64 @@
+---
+- input:
+    Resources: {}
+  expectations:
+    rules:
+      check_public_access_block_config: SKIP
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+  expectations:
+    rules:
+      check_public_access_block_config: FAIL
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            PublicAccessBlockConfiguration:
+  expectations:
+    rules:
+      check_public_access_block_config: FAIL
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            PublicAccessBlockConfiguration:
+              BlockPublicAcls: true
+  expectations:
+    rules:
+      check_public_access_block_config: FAIL
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            PublicAccessBlockConfiguration:             
+              BlockPublicAcls: true
+              BlockPublicPolicy: true
+              IgnorePublicAcls: true
+              RestrictPublicBuckets: true
+  expectations:
+    rules:
+      check_public_access_block_config: PASS
+- input:
+    Resources:
+      Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            BucketName: "countdown-to-zero"
+            PublicAccessBlockConfiguration:             
+              BlockPublicAcls: true
+              BlockPublicPolicy: true
+              IgnorePublicAcls: false
+              RestrictPublicBuckets: true
+  expectations:
+    rules:
+      check_public_access_block_config: FAIL

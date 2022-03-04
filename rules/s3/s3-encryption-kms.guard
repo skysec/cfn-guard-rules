@@ -1,5 +1,5 @@
 #
-# Bucket must be encrypting by default using "aws:kms"
+# Bucket must be encrypting objects by default using "aws:kms"
 #
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 let sse_algorithm = ['aws:kms']
